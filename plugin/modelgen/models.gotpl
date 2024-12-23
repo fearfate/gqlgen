@@ -53,7 +53,7 @@
 				{{- end}}
 				{{ generateGetter $model . }}
 
-		func Get{{ .GoName }}Description() string {
+		func ({{ goModelName $model.Name }}) Get{{ .GoName }}Description() string {
 			return {{ .Description | quote }}
 		}
 			{{- end }}
