@@ -26,7 +26,10 @@
 				{{.|prefixLines "// "}}
 			{{- end}}
 			Get{{ $field.GoName }}() {{ $field.Type | ref }}
+
+			Get{{ $field.GoName }}Description() string
 		{{- end }}
+
 	}
 {{- end }}
 
@@ -49,6 +52,10 @@
 					{{.|prefixLines "// "}}
 				{{- end}}
 				{{ generateGetter $model . }}
+
+		func ({{ goModelName $model.Name }}) Get{{ .GoName }}Description() string {
+			return {{ .Description | quote }}
+		}
 			{{- end }}
 		{{- end }}
 	{{ end }}
@@ -99,6 +106,17 @@
 
 	func (e {{ goModelName .Name }}) MarshalGQL(w io.Writer) {
 		fmt.Fprint(w, strconv.Quote(e.String()))
+	}
+
+	func (e {{ goModelName .Name }}) GetDescription(m {{ goModelName .Name }}) string {
+		switch m {
+			{{- range $value := .Values}}
+		case {{ goModelName $enum.Name .Name }}:
+			return {{ .Description|quote }}
+		    {{- end  }}
+		default:
+			return ""
+		}
 	}
 
 {{- end }}
